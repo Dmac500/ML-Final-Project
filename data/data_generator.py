@@ -1,7 +1,5 @@
 import csv
-
-
-# import numpy as np
+import pandas as pd
 
 
 def score(guess_word, answer_word):
@@ -51,11 +49,66 @@ def score(guess_word, answer_word):
 
 
 def find_freq(c, word):
+    """
+    :param c: a character
+    :param word: a word
+    :return: number of occurrences of c in word
+    """
     i = 0
     for letter in word:
         if letter == c:
             i = i + 1
     return i
+
+
+def sum_up_list(list_of_nums):
+    """
+    :param list_of_nums: A list of numbers
+    :return: Summation of all the numbers in the list
+    """
+    summation = 0
+    for num in list_of_nums:
+        summation = summation + num
+    return summation
+
+
+def get_as_pandas_data_frame():
+    """
+    Reads from word.csv
+    Scores each word against every other word and accumulates this data
+    :return: The data is returned as a pandas dataframe of the following format:
+
+                 guess actual  score
+        0        aback  aback     10
+        1        aback  abase      6
+        2        aback  abate      6
+        3        aback  abbey      4
+        4        aback  abbot      4
+        ...        ...    ...    ...
+        5359220  zonal  young      3
+        5359221  zonal  youth      2
+        5359222  zonal  zebra      3
+        5359223  zonal  zesty      2
+        5359224  zonal  zonal     10
+    """
+    
+    file = open("words.csv", "r")
+    csv_reader = csv.reader(file)
+
+    word_list = []
+    for row in csv_reader:
+        word_list.append(row[0])
+    word_list = word_list[1:]
+
+    data = []
+    for guess_word in word_list:
+        for answer_word in word_list:
+            guess_score = sum_up_list(score(guess_word, answer_word))
+            data.append([guess_word, answer_word, guess_score])
+
+    df = pd.DataFrame(data, columns=["guess", "actual", "score"])
+
+    return df
 
 
 def main():
@@ -67,7 +120,15 @@ def main():
         word_list.append(row[0])
     word_list = word_list[1:]
 
-    print(word_list)
+    data = []
+    for guess_word in word_list:
+        for answer_word in word_list:
+            guess_score = sum_up_list(score(guess_word, answer_word))
+            data.append([guess_word, answer_word, guess_score])
+
+    df = pd.DataFrame(data, columns=["guess", "actual", "score"])
+
+    print(df)
 
 
 if __name__ == "__main__":
