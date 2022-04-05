@@ -91,6 +91,21 @@ class TestScoreGenerator(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
+    def test_duplicate_6(self):
+        """
+        This test tests the case:
+        actual word: contains duplicates
+        guess word: contains duplicates
+        and all of the duplicates are in the correct position
+        """
+        guess = "apple"
+        word = "hpphe"
+
+        expected = [0, 2, 2, 0, 2]
+        actual = data_generator.score(guess, word)
+
+        self.assertEqual(expected, actual)
+
 
 if __name__ == '__main__':
     unittest.main()
